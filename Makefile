@@ -7,6 +7,3 @@ http_parser/http_parser.o:
 clean:
 	make -C http_parser clean
 	rm webserver
- 
-run: 
-	make clean && make && ./webserver
