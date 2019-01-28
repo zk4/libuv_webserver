@@ -13,7 +13,7 @@
     "hello world\n"
 
 static uv_buf_t resbuf;
-static uv_tcp_t server;
+ 
 static http_parser_settings settings;
 
 typedef struct
@@ -28,13 +28,13 @@ void on_close(uv_handle_t *handle)
     free(handle);
 }
 
-static void on_alloc(uv_handle_t *handle, size_t suggested_size,uv_buf_t *buf)
+static void on_alloc(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf)
 {
-  buf->base = malloc(suggested_size);
-  buf->len = suggested_size;
+    buf->base = malloc(suggested_size);
+    buf->len = suggested_size;
 }
 
-static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t* buf)
+static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 {
     client_t *client = handle->data;
     size_t parsed;
@@ -69,17 +69,18 @@ static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t* buf)
     // }
 
     // free(buf.base);
-///
-     if (nread < 0) {
+    ///
+    if (nread < 0)
+    {
         if (nread != UV_EOF)
             fprintf(stderr, "Read error %s\n", uv_err_name(nread));
-        uv_close((uv_handle_t*) client, NULL);
+        uv_close((uv_handle_t *)client, NULL);
         free(buf->base);
         free(client);
         return;
     }
 
-    char *data = (char*) malloc(sizeof(char) * (nread+1));
+    char *data = (char *)malloc(sizeof(char) * (nread + 1));
     data[nread] = '\0';
     strncpy(data, buf->base, nread);
 
@@ -88,27 +89,27 @@ static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t* buf)
     free(buf->base);
 }
 
-void on_connected(uv_stream_t *s, int status)
+void on_connected(uv_stream_t *server, int status)
 {
-    assert(s == (uv_stream_t *)&server);
+    
     assert(status == 0);
 
     client_t *client = malloc(sizeof(client_t));
-
-    int r = uv_tcp_init(s->loop, &client->tcp);
+   
+    int r = uv_tcp_init(server->loop, &client->tcp);
     if (r)
     {
         fprintf(stderr, "accept: %s\n", uv_strerror(r));
         return;
     }
 
-    r = uv_accept((uv_stream_t *)&server, (uv_stream_t *)&client->tcp);
+    r = uv_accept( server, (uv_stream_t *)&client->tcp);
     if (r)
     {
         fprintf(stderr, "accept: %s\n", uv_strerror(r));
         return;
     }
-
+  fprintf(stdout, "111111111111");
     client->tcp.data = client;
     client->parser.data = client;
 
@@ -136,7 +137,7 @@ uv_loop_t *loop;
 
 int main()
 {
-        fprintf(stderr, "tiny sever v0.0.1");
+    fprintf(stderr, "tiny sever v0.0.1");
 
     resbuf.base = RESPONSE;
     resbuf.len = sizeof(RESPONSE);
