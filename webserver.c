@@ -96,7 +96,7 @@ void on_connected(uv_stream_t *server, int status)
     http_parser_init(&client->parser, HTTP_REQUEST);
 
     uv_read_start((uv_stream_t *)&client->tcp, on_alloc, on_read);
-    fprintf(stdout, "111111111111");
+
 }
 
 static void write_cb(uv_write_t *req, int status)
