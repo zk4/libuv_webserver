@@ -36,57 +36,37 @@ static void on_alloc(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf)
 
 static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 {
-    client_t *client = handle->data;
+    
+ 
+    client_t* client = handle->data;
     size_t parsed;
 
-    // if (nread >= 0)
-    // {
-    //     /* parse http */
+  if (nread >= 0) {
+    /* parse http */
 
-    //     parsed = http_parser_execute(&client->parser,
-    //                                  &settings,
-    //                                  buf.base,
-    //                                  nread);
+    parsed = http_parser_execute(&client->parser,
+                                 &settings,
+                                 buf->base,
+                                 nread);
 
-    //     if (parsed < nread)
-    //     {
-    //         printf("parse error");
-    //         uv_close((uv_handle_t *)handle, on_close);
-    //     }
-    // }
-    // else
-    // {
-
-    //     if (nread == UV_EOF)
-    //     {
-    //         /* do nothing */
-    //         fprintf(stderr, "Read error %s\n", uv_err_name(nread));
-    //     }
-
-    //     fprintf(stderr, "read: %s\n", uv_strerror(err));
-
-    //     uv_close((uv_handle_t *)handle, on_close);
-    // }
-
-    // free(buf.base);
-    ///
-    if (nread < 0)
-    {
-        if (nread != UV_EOF)
-            fprintf(stderr, "Read error %s\n", uv_err_name(nread));
-        uv_close((uv_handle_t *)client, NULL);
-        free(buf->base);
-        free(client);
-        return;
+    if (parsed < nread) {
+      printf("parse error");
+      uv_close((uv_handle_t*)handle, on_close);
     }
 
-    char *data = (char *)malloc(sizeof(char) * (nread + 1));
-    data[nread] = '\0';
-    strncpy(data, buf->base, nread);
+  } else { 
+    
 
-    fprintf(stderr, "%s", data);
-    free(data);
-    free(buf->base);
+    if (nread == UV_EOF) {
+        fprintf(stderr, "Read error %s\n", uv_err_name(nread));
+    } else {
+      fprintf(stderr, "read: %s\n", uv_err_name(nread));
+    }
+
+    uv_close((uv_handle_t*)handle, on_close);
+  }
+
+  free(buf->base);
 }
 
 void on_connected(uv_stream_t *server, int status)
@@ -109,13 +89,14 @@ void on_connected(uv_stream_t *server, int status)
         fprintf(stderr, "accept: %s\n", uv_strerror(r));
         return;
     }
-  fprintf(stdout, "111111111111");
+  
     client->tcp.data = client;
     client->parser.data = client;
 
     http_parser_init(&client->parser, HTTP_REQUEST);
 
     uv_read_start((uv_stream_t *)&client->tcp, on_alloc, on_read);
+    fprintf(stdout, "111111111111");
 }
 
 static void write_cb(uv_write_t *req, int status)
