@@ -19,5 +19,7 @@ make clean
 
 ## bench
 Not bad 
+![bench](https://github.com/zk4/libuv_webserver/blob/master/bench.jpg?raw=true)
+Instruction video by Ryan Dahl can be seen in http://vimeo.com/24713213)
 
-Instruction video by Ryan Dahl can be seen in http://vimeo.com/24713213
+ 
