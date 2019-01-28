@@ -136,6 +136,7 @@ uv_loop_t *loop;
 
 int main()
 {
+        fprintf(stderr, "tiny sever v0.0.1");
 
     resbuf.base = RESPONSE;
     resbuf.len = sizeof(RESPONSE);
